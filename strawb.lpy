@@ -1,0 +1,40 @@
+from openalea.plantgl.all import Polyline2D
+from numpy import arange
+import random as rd
+
+def slope(u):
+  return (u,u**2)
+
+def fruit(u):
+  return (u,u**3)
+
+C0 = Polyline2D([slope(u) for u in arange(0,2,0.1)])
+C1 = Polyline2D([fruit(u) for u in arange(0,4,0.1)])
+
+module L
+module S
+module B
+
+Axiom: L(20)
+
+derivation length: 100
+production:
+
+L(t):
+  L = 5
+  L0 = 10
+  for i in range(t):
+    if (i > 10):
+      nproduce [;/(rd.randint(0, 360))SetGuide(C1,5) nF(2, 0.1)B(0)]
+    else:
+      nproduce [;/(rd.randint(0, 360))nF(1,1)+(30)nF(1,1)+(40)nF(1,1)+(10)nF(1,1)S(3)]
+
+S(t):
+    nproduce -(70)~l-(-90)~l-(-100)~l
+
+B(t):
+  produce SetColor(200, 63, 73) @O(0.2)
+
+interpretation:
+
+endlsystem
