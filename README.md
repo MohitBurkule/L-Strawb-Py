@@ -1,4 +1,10 @@
 # L-Strawb-Py
-L-system based generation of a strawberry plant using lpy
+L-system based generation of a strawberry plant using Lpy
 
+## Install
+The [Lpy](https://github.com/openalea/lpy) framework is required to run this code which supports Windows, OSX and Linux devices.
+
+Once installed simply open the .py file into lpy and run.
+
+## Examples
 ![](imgs/strawb_lpy_gen.PNG)
