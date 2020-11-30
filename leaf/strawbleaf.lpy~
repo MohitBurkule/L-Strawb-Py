@@ -1,0 +1,29 @@
+import random as rd
+
+module L
+module B
+
+Axiom: ;F(0.1)[L(11)][-L(11)][+L(11)]
+
+derivation length: 100
+production:
+
+#Frame _(0.01),(2){.F(3)-(90)F(3)-(90)F(3)-(90)F(3)}
+L(t):
+	x = 0.06
+	y = 70
+	for i in range(t):
+		if i <= 2:
+			x += 0.015
+		else:
+		  
+			x -= 0.01
+		nproduce _(0.005)F(0.07)[-(y)F(x)+(10)F(x)+(10)F(x)+(10)F(x)][+(y)F(x)-(10)F(x)-(10)F(x)-(10)F(x)]F(0.01)
+	produce F(0.1)
+
+B(t):
+	nproduce [+(90)F(0.05)][-(90)F(0.05)]
+
+interpretation:
+
+endlsystem
