@@ -1,0 +1,65 @@
+import random as rd
+
+module L
+module S
+module B
+module I
+module Lef
+module Bran
+
+#;_(0.01)F(0.1)[{Lef(11)}(True)][/(20){-Lef(11)}(True)][/(-20){+Lef(11)}(True)]
+Axiom: _(0.04)I(5)L(20)
+
+derivation length: 100
+production:
+
+#Module to generate the branches
+L(t):
+  for i in range(t):
+    if (i > 10):
+      nproduce [;/(rd.randint(0, 360))+(50)nF(1,1)+(30)nF(1,1)+(30)nF(1,1)B(0)]
+    else:
+      nproduce [;/(rd.randint(0, 360))+(rd.randint(20,50))nF(0.5,0.5)+(rd.randint(0,40))nF(0.5,0.5)+(rd.randint(0,20))nF(0.5,1)
+      nproduce \(90)_(0.02)F(0.1)[{Lef(11)}(True)][/(20){-Lef(11)}(True)][/(-20){+Lef(11)}(True)]]
+
+#Module to generate the leaves at the end of the branches
+S(t):
+    nproduce /(90)-(70)~l-(-90)~l-(-100)~l
+
+#Module to generate the strawberries
+B(t):
+  produce SetColor(200, 63, 73) @O(0.2)
+
+I(t):
+  for i in range(t):
+    nproduce [;/(rd.randint(0,360))+(rd.randint(0,20))nF(1,0.5)+(rd.randint(0,20))nF(1,0.5)+(rd.randint(0,40))nF(1,0.5)
+    nproduce \(90)_(0.02)F(0.1)[{Lef(11)}(True)][/(20){-Lef(11)}(True)][/(-20){+Lef(11)}(True)]]
+
+#generates the stem of the leaf and provides the length, angle and thickness values
+Lef(t):
+	x = 0.1
+	y = 70
+	w = 0.015
+	for i in range(t):
+		if i <= 2:
+			x += 0.05
+		else:
+		
+			x -= 0.03
+		if w >= 0.003:
+			w -= 0.001
+		print(w)
+		nproduce F(0.1)_(w) [-(y)Bran(4,x,10,w)] [+(y)Bran(4,x,-10,w)] F(0.05)
+	produce F(0.1)
+
+#Generates the branches of the leaf
+Bran(t,x, y, w):
+	for i in range(t):
+		if w >= 0.003:
+			w -= 0.002
+		
+		nproduce _(w)F(x)+(y)
+
+interpretation:
+
+endlsystem
