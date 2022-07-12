@@ -7,5 +7,5 @@ The [Lpy](https://github.com/openalea/lpy) framework is required to run this cod
 Once installed simply open the .lpy file into lpy application and run.
 
 ## Examples
-![](imgs/strawb_lpy_gen.PNG)
-![](imgs/strawb_leaf.PNG)
+![](imgs/single_strawberry_example.png
+)
