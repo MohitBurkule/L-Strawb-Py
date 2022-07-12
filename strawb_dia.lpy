@@ -1,0 +1,318 @@
+import matplotlib.pyplot as plt
+from openalea.plantgl.all import *
+import random as rd
+from numpy import random as rng
+import decimal
+import numpy as ny
+import math
+import time
+
+#LeafArea
+Lf = 0
+
+#60 days
+
+Lx = 0
+Ly = 15
+Lz = 20
+
+#Global plant location variable
+Px = 0
+Py = 0
+
+spiral = 0
+
+#Textures for the plants
+context().turtle.setMaterial(9,ImageTexture('textures/leaf.png'))
+context().turtle.setMaterial(8,ImageTexture('textures/stem_drk.png'))
+context().turtle.setMaterial(10,ImageTexture('textures/strawb.jpeg'))
+
+def SaveArea(x):
+	global Lf
+	Lf = x
+	#print(Ly)
+
+#generate a temp for the day
+def RanTemp(x, max, low):
+	return round(rd.uniform(low[x], max[x]), 1)	
+
+#Number of infloresences/strawberries on a single stem
+inflo = [5, 5, 12, 7, 14, 3, 12, 8, 3 , 2, 5, 5, 6, 7, 5, 5, 8, 4, 5, 5, 6, 2]
+Petiole = [28, 29, 23, 21,5, 22,5, 22, 30, 20.3, 19, 20, 12, 25, 6.3, 26, 19, 14, 18.3, 19.3, 14.5, 10.1, 13, 19, 22.5, 12, 20, 7, 7, 19, 21, 28, 23, 19, 29, 21]
+
+#List of mean temperatures from the UK of 2020 and the max and min temps recorded for that day
+mean = [5.6, 5.1, 5.6, 9.1, 11.3, 14.0, 14.3, 15.9, 12.9, 9.4, 7.7, 4.3]
+min = [-7.9, -10.0, -7.6, -6.9, -6.6, -1.9, -0.6, -0.4, -5.0, -3.3, -6.1, -10.9]
+max = [15.6, 16.0, 19.4, 26.0, 28.3, 33.4, 37.8, 36.4, 31.3, 19.1, 18.4, 14.9]
+#List of each month and days (not including leap year)
+MnthsDays = [[1, 31], [2, 28], [3, 31], [4, 30], [5, 31], [6, 30], [7, 31], [8, 31], [9, 30], [10, 31], [11, 30], [12, 31]]
+#List to store each temp
+tempHigh = []
+tempLow = []
+#generate sigmoid curve  for petiole length
+def Sigmoid(x, limit, pos):
+	a = []
+	for item in x:
+		sig = round(5 + (limit/(1+math.exp(pos-item))), 2)
+		a.append(sig)
+	return a
+
+#Calculate the Growth Degree days
+def CalGDD(high, low):
+	base = 7
+	if (low < 7):
+		if (high > 25):
+			return 25 + 7 / 2
+		else:
+			return high + 7 / 2
+	elif (low > 25):
+		return 25 + low / 2
+	else:
+		return high + low / 2
+
+
+#Get Last roll and add new roll in
+def Spiral():
+	global spiral
+	spiral = spiral + rd.randint(50, 70)
+	return spiral
+
+#Global variable for plant location	print(Lfstore)
+def PlantLoc(x, y):
+	global Px
+	global Py
+	Px = x
+	Py = y
+
+def EucDist(x, y, z):
+	A = ny.array((x, y, z))
+	B = ny.array((Lx, Ly, Lz))
+	return ny.linalg.norm(A-B)
+
+#Compare plant location with the point light location
+def LightLoc(plant, light):
+	if (Phototropism == True):
+		diff = plant - light
+		if (plant > light):
+			return -1
+		elif (diff <= 5 and diff >= -5):
+			return 0
+		else:
+			return 1
+	else:
+		return 0
+
+points  = ny.arange(0., 8., 0.15)
+if (SDLD == True): 
+	log = Sigmoid(points, 10, 4)
+else:	
+	log = Sigmoid(points, 20, 3)
+
+for n in range(months):
+	for y in range(MnthsDays[n][1]):
+		#print(days[n][1])
+		tempLow.append(RanTemp(n, mean, min))
+		tempHigh.append(RanTemp(n, max, mean))
+
+#print(tempLow)
+
+GDD = 0
+
+Days = len(tempHigh)
+for n in range(len(tempHigh)):
+	GDD = GDD + CalGDD(tempHigh[n], tempLow[n])
+
+#print(GDD)
+
+total = GDD
+
+leafs = round(total / rd.randint(60, 66))
+if (leafs > 45):
+	leafs = 45
+
+
+Axiom: Plight()  Farm(1, 1, 150/3)
+
+derivation length: 7
+production:
+
+Plight():	
+	if (Phototropism == True):
+		nproduce [SetColor(4)@M(Lx, Ly, Lz)@O(3)]
+
+Farm(rows, columns, dist):
+	st = time.time()
+	x = 0
+	y = 0
+	for a in range(rows):
+		
+		#nproduce @M(x, 0, 0)[SetColor(4)PC(leafs)]
+		for b in range(columns):
+			PlantLoc(x, y)
+			#print(EucDist(x, y, 0))
+			#f(10)+(45)
+			nproduce @M(x, y, 0) [SetColor(2)PC(leafs + rd.randint(-5, 5))]
+			y = y + dist
+		y = 0
+		x = x + dist
+	et = time.time()
+	res = et - st
+	print('CPU Execution time:', res, 'seconds')
+
+#Primary Crown
+PC(x):
+	#If more than 10 leaves are generated generate fruit
+	if (x >= 10):
+		for a in range(rd.randint(1, 3)):
+			#component to generate the fruit
+			nproduce [Rol()INF(0)]
+	for leaf in range(x):
+		#generate each leaf
+		nproduce [Rol()L(leaf)]
+
+#Branching Crown
+BC(x):
+	y = rd.randint(1, 2)
+	if y == 2:
+		for a in range(x):
+			nproduce SetColor(5)+(10)F(0.1)[Rol()L()]
+	else:
+		for a in range(x):
+			nproduce SetColor(5)-(10)F(0.1)[Rol()L()
+
+#Leaf generation
+LF(x, leaf):
+	#The current leaf 
+	T = leafs - leaf
+		
+	#Generates leaves with rayleigh distribution based on the mode of the real data.
+	LeafArea = rng.rayleigh(137, 1)
+	#loop to create new values in case the value generated was above the min or max of the original data	
+	while LeafArea < 30.41 or LeafArea > 323.64:
+		LeafArea = rng.rayleigh(137, 1)
+	
+	LeafArea = ((LeafArea[0] / 3) / 3) / 3
+	#LeafArea = round(T / 5) + 1
+	
+	#Get weight based on the leaf area
+	DryWeight = round(2000 / 1 + float(decimal.Decimal(LeafArea)/5)) 
+	
+	#the older the leaf the bigger the angle
+	angle = T * rd.randint(1, 10)
+	#Cannot exceed 70 degrees
+	if (angle >  70):
+		nproduce +(70)
+	else:
+		nproduce +(angle)
+	
+	for a in range(x):
+		#If hair is enabled generate
+		if (Hair == True):
+			nproduce Hr(100)
+		nproduce @Tp(LightLoc(Px, Lx), LightLoc(Py, Ly),-1) Elasticity(abs(tropism)/DryWeight) nF(1, 0.2)
+	nproduce /(90)P(LeafArea)
+
+#Calculate leaf weight (Unused)
+LWeight(x):
+	DryWeight = round(100 / x)
+	nproduce @Tp(0,0,-1) Elasticity(abs(tropism)/DryWeight)
+
+
+#Generate stem hairs
+Hr(x):
+	for a in range(x):
+		len = float(decimal.Decimal(rd.randrange(0, 10))/10)
+		nproduce: [SetColor(7)/(rd.randint(0, 360))nf(len, len)+(rd.randint(45, 120))_(0.001)@B(0.25)]
+
+#Fruit
+INF(x):
+ #Create number of infloresence based on the mode of Riseholme data using Rayleigh
+	s = rng.rayleigh(5, 1)
+	
+	nproduce SetColor(2)/(5)+(15)@Tp(0,0,-1) Elasticity(abs(tropism)/1000.)nF(1.5, 0.1)[nF(2, 0.1)Berries(int(s))]
+
+#Berry generation
+Berries(x):
+	for a in range(x):
+		size = float(decimal.Decimal(rd.randrange(2, 5))/10)
+		nproduce /(rd.randint(-360, 360))[BWeight(size)+(rd.randint(0, 75))nF(3, 0.1) BerryLeaf() f(size) SetColor(10)TextureScale(1)@O(size)]
+
+BerryLeaf():
+	nproduce [+(90)/(90)~l(0.5)] [-(90)/(90)~l(0.5)] [/(90)+(90) /(90)~l(0.5)] [/(90)-(90) /(90)~l(0.5)]
+
+BWeight(x):
+	Size = round(50 / x)  
+	nproduce @Tp(0,0,-1) Elasticity(abs(tropism)/Size)
+
+#Stolon/Runner generation
+ST(x):
+	for a in range(x):
+		nproduce +(5)@Tp(0,0,-1) Elasticity(abs(tropism)/1000.)nF(1, 0.1)
+
+#Leaf polygon generation
+L(x):
+	#generate petiole length
+	petiole = rng.uniform(ny.min(Petiole), ny.max(Petiole), 1)
+	
+	#set the colour and scale the texture
+	nproduce SetColor(2) TextureScale(1)LF(round(petiole[0] / 3), x)
+
+og(x):
+	nproduce ~l(x/2+0.5)+(90)~l(x/2+0.5)-(180)~l(x/2+0.5)
+
+#Component to generate the trifolate
+P(x):
+	nproduce SetColor(9) TextureRotation(-90) [/(90)+(5)f(x/2)/(-90)@o(x/2)] TextureRotation(-90) +(90) [/(90)+(15)f(x/2)/(-90)@o(x/2)] -(180)/(90)+(15)f(x/2)/(-90)@o(x/2)
+
+Spr():
+	nproduce /(rd.randint(-360, 360))
+
+#Spiral generation
+Rol():
+	nproduce F(0.05)/(Spiral())
+
+#Unused Polygon generation of leaf
+Rf --> -(10)F(0.3)-(10)F(0.2)-(40)F+(10)F+(120)F(0.3)-(120)F(0.5)+(10)F(0.5)+(130)F(0.3)-(120)F(0.5)+(10)F(0.5)+(130)F(0.3)-(120)F(0.5)+(5)F(0.5)+(120)F(0.3)-(120)F(0.5)+(10)F(0.5)+(130)F(0.3)-(120)F(0.5)+(10)F(0.5)+(120)F(0.3)-(120)F(0.5)+(10)F(0.5)+(120)F(0.3)-(130)F(0.5)+(10)F(0.5)
+Lf --> +(110)F(0.5)+(10)F(0.5)-(120)F(0.3)+(110)F(0.5)+(10)F(0.5)-(120)F(0.3)+(120)F(0.5)+(10)F(0.5)-(120)F(0.3)+(120)F(0.5)+(10)F(0.5)-(120)F(0.3)+(120)F(0.5)+(10)F(0.5)-(120)F(0.3)+(130)F(0.5)+(10)F(0.5)-(120)F(0.3)+(130)F(0.5)+(10)F(0.5)-(120)F(0.3)+(130)F+(10)F-(10)F(0.1)-(20)F(0.3)-(20)F(0.3)
+
+endlsystem
+###### INITIALISATION ######
+
+__lpy_code_version__ = 1.1
+
+def __initialiseContext__(context):
+	import openalea.plantgl.all as pgl
+	PGL_94035737448096 = pgl.ImageTexture("PGL_94035737448096" , "textures/leaf.png" , )
+	PGL_94035737448096.name = "PGL_94035737448096"
+	Color_0 = pgl.Texture2D(image = PGL_94035737448096 , )
+	Color_0.name = "Color_0"
+	context.turtle.setMaterial(0,Color_0)
+	Color_2 = pgl.Material("Color_2" , ambient = (56,96,20) , diffuse = 1.125 , shininess = 1 , )
+	Color_2.name = "Color_2"
+	context.turtle.setMaterial(2,Color_2)
+	Color_3 = pgl.Material("Color_3" , ambient = (0,0,0) , diffuse = 4.18605 , shininess = 0 , )
+	Color_3.name = "Color_3"
+	context.turtle.setMaterial(3,Color_3)
+	Color_4 = pgl.Material("Color_4" , ambient = (60,60,15) , diffuse = 3 , emission = (234,255,0) , )
+	Color_4.name = "Color_4"
+	context.turtle.setMaterial(4,Color_4)
+	Color_7 = pgl.Material("Color_7" , ambient = (178,206,171) , diffuse = 0.68932 , )
+	Color_7.name = "Color_7"
+	context.turtle.setMaterial(7,Color_7)
+	PGL_94571117539184 = pgl.ImageTexture("PGL_94571117539184" , "textures/stem_drk.png" , )
+	Color_8 = pgl.Texture2D(image = PGL_94571117539184 , )
+	Color_8.name = "Color_8"
+	context.turtle.setMaterial(8,Color_8)
+	PGL_94571107983392 = pgl.ImageTexture("PGL_94571107983392" , "textures/leaf.png" , )
+	PGL_94571107983392.name = "PGL_94571107983392"
+	Color_9 = pgl.Texture2D(image = PGL_94571107983392 , )
+	Color_9.name = "Color_9"
+	context.turtle.setMaterial(9,Color_9)
+	PGL_94571035469648 = pgl.ImageTexture("PGL_94571035469648" , "textures/strawb.jpeg" , )
+	Color_10 = pgl.Texture2D(image = PGL_94571035469648 , )
+	Color_10.name = "Color_10"
+	context.turtle.setMaterial(10,Color_10)
+	scalars = [('tropism', 'Float', 9.81, 0.0, 99.99, 2), ('Hair', 'Bool', False), ('Point Light', 'Category'), ('Phototropism', 'Bool', False), ('Temperature', 'Category'), ('High_temp', 'Float', 0.0, 0.0, 99.99, 2), ('Low_temp', 'Float', 0.0, 0.0, 99.99, 2), ('Days', 'Category'), ('Days', 'Integer', 140, 0, 1000), ('SDLD', 'Bool', False), ('months', 'Integer', 3, 1, 12), ('start', 'Integer', 1, 1, 100)]
+	context["__scalars__"] = scalars
+	for s in scalars:
+		if not s[1] == "Category" : context[s[0]] = s[2]
