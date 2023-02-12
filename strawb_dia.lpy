@@ -61,14 +61,14 @@ def Sigmoid(x, limit, pos):
 def CalGDD(high, low):
 	base = 7
 	if (low < 7):
-		if (high > 25):
-			return 25 + 7 / 2
+		if (high > 30):
+			return (30 + 7) / 2 - base
 		else:
-			return high + 7 / 2
-	elif (low > 25):
-		return 25 + low / 2
+			return (high + 7) / 2 - base
+	elif (low > 30):
+		return (30 + low) / 2 - base
 	else:
-		return high + low / 2
+		return (high + low) / 2 - base
 
 
 #Get Last roll and add new roll in
