@@ -313,22 +313,22 @@ def __initialiseContext__(context):
 	Color_7 = pgl.Material("Color_7" , ambient = (178,206,171) , diffuse = 0.68932 , )
 	Color_7.name = "Color_7"
 	context.turtle.setMaterial(7,Color_7)
-	PGL_94031335283408 = pgl.ImageTexture("PGL_94031335283408" , "textures/stem_drk.png" , )
-	PGL_94031335283408.name = "PGL_94031335283408"
-	Color_8 = pgl.Texture2D(image = PGL_94031335283408 , )
+	PGL_94431969697312 = pgl.ImageTexture("PGL_94431969697312" , "textures/stem_drk.png" , )
+	PGL_94431969697312.name = "PGL_94431969697312"
+	Color_8 = pgl.Texture2D(image = PGL_94431969697312 , )
 	Color_8.name = "Color_8"
 	context.turtle.setMaterial(8,Color_8)
-	PGL_94031332023824 = pgl.ImageTexture("PGL_94031332023824" , "textures/leaf.png" , )
-	PGL_94031332023824.name = "PGL_94031332023824"
-	Color_9 = pgl.Texture2D(image = PGL_94031332023824 , )
+	PGL_94432090042928 = pgl.ImageTexture("PGL_94432090042928" , "textures/leaf.png" , )
+	PGL_94432090042928.name = "PGL_94432090042928"
+	Color_9 = pgl.Texture2D(image = PGL_94432090042928 , )
 	Color_9.name = "Color_9"
 	context.turtle.setMaterial(9,Color_9)
-	PGL_94031323006992 = pgl.ImageTexture("PGL_94031323006992" , "textures/strawb.jpeg" , )
-	PGL_94031323006992.name = "PGL_94031323006992"
-	Color_10 = pgl.Texture2D(image = PGL_94031323006992 , )
+	PGL_94431969697200 = pgl.ImageTexture("PGL_94431969697200" , "textures/strawb.jpeg" , )
+	PGL_94431969697200.name = "PGL_94431969697200"
+	Color_10 = pgl.Texture2D(image = PGL_94431969697200 , )
 	Color_10.name = "Color_10"
 	context.turtle.setMaterial(10,Color_10)
-	scalars = [('tropism', 'Float', 9.81, 0.0, 99.99, 2), ('Hair', 'Bool', False), ('Point Light', 'Category'), ('Light_location_Z', 'Integer', 20, 0, 100), ('Light_location_Y', 'Integer', 25, 0, 100), ('Light_location_X', 'Integer', 0, 0, 100), ('Phototropism', 'Bool', False), ('Temperature', 'Category'), ('High_temp', 'Float', 0.0, 0.0, 99.99, 2), ('Low_temp', 'Float', 0.0, 0.0, 99.99, 2), ('Days', 'Category'), ('Days', 'Integer', 140, 0, 1000), ('SDLD', 'Bool', False), ('months', 'Integer', 6, 1, 12), ('start', 'Integer', 4, 1, 12)]
+	scalars = [('tropism', 'Float', 9.81, 0.0, 99.99, 2), ('Hair', 'Bool', False), ('Point Light', 'Category'), ('Light_location_Z', 'Integer', 20, 0, 100), ('Light_location_Y', 'Integer', 25, 0, 100), ('Light_location_X', 'Integer', 0, 0, 100), ('Phototropism', 'Bool', False), ('Days', 'Category'), ('Days', 'Integer', 140, 0, 1000), ('SDLD', 'Bool', False), ('months', 'Integer', 6, 1, 12), ('start', 'Integer', 4, 1, 12)]
 	context["__scalars__"] = scalars
 	for s in scalars:
 		if not s[1] == "Category" : context[s[0]] = s[2]
