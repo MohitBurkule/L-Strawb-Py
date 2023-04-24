@@ -134,8 +134,15 @@ if (leafs > 45):
 	leafs = 45
 
 
-def check_leaf_collision(circle_pos, circle_radius, circle2_pos, circle2_radius):
-  pass
+def check_distance(point1, radius1, point2, radius2):
+  x1, y1, z1 = point1
+  x2, y2, z2 = point2
+  distance = math.sqrt((x2 - x1)**2 + (y2 - y1)**2 + (z2 - z1)**2)
+  if distance <= (radius1 + radius2):
+    return True
+  else:
+    return False
+
 
 Axiom: Plight()  Farm(1, 1, 150/3)
 
@@ -216,7 +223,7 @@ LF(x, leaf):
 		if (Hair == True):
 			nproduce Hr(100)
 		nproduce @Tp(LightLoc(Px, Light_location_X), LightLoc(Py, Light_location_Y),-1) Elasticity(abs(tropism)/DryWeight) nF(1, 0.2)
-	nproduce /(90)?PP(LeafArea)
+	nproduce /(90)P(LeafArea)
 
 
 #Calculate leaf weight (Unused)
@@ -277,10 +284,18 @@ og(x):
 
 #Component to generate the trifolate
 P(x):
-	nproduce SetColor(9) TextureRotation(-90) [/(90)+(5)f(x/2)/(-90)@o(x/2)] TextureRotation(-90) +(90) [/(90)+(15)f(x/2)/(-90)@o(x/2)] -(180)/(90)+(15)f(x/2)/(-90)@o(x/2)
+	#nproduce SetColor(9) TextureRotation(-90) [/(90)+(5)f(x/2)/(-90)?P@o(x/2)] TextureRotation(-90) +(90) [/(90)+(15)f(x/2)/(-90)?P@o(x/2)] -(180)/(90)+(15)f(x/2)/(-90)?P@o(x/2)
+	nproduce SetColor(9) TextureRotation(-90) [/(90)+(5)/(-90)?P LeafRadius(x/2)] TextureRotation(-90) +(90) [/(90)+(15)/(-90)?P LeafRadius(x/2)] -(180)/(90)+(15)/(-90)?P LeafRadius(x/2)
 
-?P(p):
-  leaves_circle_pos.append(p)
+?P(p) LeafRadius(r):
+  radius = r
+  point_radius = [p, r]
+  leaves_circle_pos.append(point_radius)
+  for point in leaves_circle_pos:
+    if check_distance({p[0], p[1], p[2]}, r, point[0], point[1]):
+      #nproduce f(r/2)@o(r/2)
+      return
+  nproduce f(r)@o(r)
 
 Spr():
 	nproduce /(rd.randint(-360, 360))
@@ -319,19 +334,17 @@ def __initialiseContext__(context):
 	Color_7 = pgl.Material("Color_7" , ambient = (178,206,171) , diffuse = 0.68932 , )
 	Color_7.name = "Color_7"
 	context.turtle.setMaterial(7,Color_7)
-	PGL_94075833078656 = pgl.ImageTexture("PGL_94075833078656" , "textures/stem_drk.png" , )
-	PGL_94075833078656.name = "PGL_94075833078656"
-	Color_8 = pgl.Texture2D(image = PGL_94075833078656 , )
+	PGL_93826404006032 = pgl.ImageTexture("PGL_93826404006032" , "textures/stem_drk.png" , )
+	Color_8 = pgl.Texture2D(image = PGL_93826404006032 , )
 	Color_8.name = "Color_8"
 	context.turtle.setMaterial(8,Color_8)
-	PGL_94075810554576 = pgl.ImageTexture("PGL_94075810554576" , "textures/leaf.png" , )
-	PGL_94075810554576.name = "PGL_94075810554576"
-	Color_9 = pgl.Texture2D(image = PGL_94075810554576 , )
+	PGL_93826379667280 = pgl.ImageTexture("PGL_93826379667280" , "textures/leaf.png" , )
+	PGL_93826379667280.name = "PGL_93826379667280"
+	Color_9 = pgl.Texture2D(image = PGL_93826379667280 , )
 	Color_9.name = "Color_9"
 	context.turtle.setMaterial(9,Color_9)
-	PGL_94075798166512 = pgl.ImageTexture("PGL_94075798166512" , "textures/strawb.jpeg" , )
-	PGL_94075798166512.name = "PGL_94075798166512"
-	Color_10 = pgl.Texture2D(image = PGL_94075798166512 , )
+	PGL_93826577038592 = pgl.ImageTexture("PGL_93826577038592" , "textures/strawb.jpeg" , )
+	Color_10 = pgl.Texture2D(image = PGL_93826577038592 , )
 	Color_10.name = "Color_10"
 	context.turtle.setMaterial(10,Color_10)
 	scalars = [('tropism', 'Float', 9.81, 0.0, 99.99, 2), ('Hair', 'Bool', False), ('Point Light', 'Category'), ('Light_location_Z', 'Integer', 20, 0, 100), ('Light_location_Y', 'Integer', 25, 0, 100), ('Light_location_X', 'Integer', 0, 0, 100), ('Phototropism', 'Bool', False), ('Days', 'Category'), ('Days', 'Integer', 140, 0, 1000), ('SDLD', 'Bool', False), ('months', 'Integer', 6, 1, 12), ('start', 'Integer', 4, 1, 12)]
