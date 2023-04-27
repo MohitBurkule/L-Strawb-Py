@@ -52,6 +52,7 @@ tempLow = []
 #generate sigmoid curve  for petiole length
 
 leaves_circle_pos = []
+fruit_pos = []
 
 def Sigmoid(x, limit, pos):
 	a = []
@@ -244,14 +245,17 @@ INF(x):
  #Create number of infloresence based on the mode of Riseholme data using Rayleigh
 	s = rng.rayleigh(5, 1)
 	
-	nproduce SetColor(2)/(5)+(15)@Tp(0,0,-1) Elasticity(abs(tropism)/1000.)nF(1.5, 0.1)[nF(2, 0.1)Berries(int(s))]
+	nproduce SetColor(2)+(75)@Tp(0,0,-1) Elasticity(abs(tropism)/1000.)nF(3, 0.1)[Berries(int(s))]
 
 
 #Berry generation
 Berries(x):
-	for a in range(x):
-		size = float(decimal.Decimal(rd.randrange(2, 5))/10)
-		nproduce /(rd.randint(-360, 360))[BWeight(size)+(rd.randint(0, 75))nF(3, 0.1) BerryLeaf() f(size) SetColor(10)TextureScale(1)@O(size)]
+  rotation = 90 / x
+  for a in range(x):
+    size = float(decimal.Decimal(rd.randrange(2, 5))/10)
+    rotation = rotation + 90 / x
+    #nproduce /(rd.randint(0, 360))[BWeight(size)+(rotation)nF(3, 0.1) BerryLeaf() f(size) SetColor(10)TextureScale(1) ?P BerryRadius(size)]
+    nproduce /(rd.randint(0,180))[+(rotation) BWeight(size) nF(3, 0.1) BerryLeaf() f(size) SetColor(10)TextureScale(1)?P BerryRadius(size)]
 
 
 BerryLeaf():
@@ -262,6 +266,14 @@ BWeight(x):
 	Size = round(50 / x)  
 	nproduce @Tp(0,0,-1) Elasticity(abs(tropism)/Size)
 
+
+?P(p) BerryRadius(r):
+  fruit = [p, r]
+  fruit_pos.append(fruit)
+  for point in fruit_pos:
+    if point[0] != p and check_distance({p[0], p[1], p[2]}, r, point[0], point[1]):
+      return
+  nproduce @O(r)
 
 #Stolon/Runner generation
 ST(x):
@@ -334,22 +346,20 @@ def __initialiseContext__(context):
 	Color_7 = pgl.Material("Color_7" , ambient = (178,206,171) , diffuse = 0.68932 , )
 	Color_7.name = "Color_7"
 	context.turtle.setMaterial(7,Color_7)
-	PGL_94509152477248 = pgl.ImageTexture("PGL_94509152477248" , "textures/stem_drk.png" , )
-	PGL_94509152477248.name = "PGL_94509152477248"
-	Color_8 = pgl.Texture2D(image = PGL_94509152477248 , )
+	PGL_94352122738688 = pgl.ImageTexture("PGL_94352122738688" , "textures/stem_drk.png" , )
+	Color_8 = pgl.Texture2D(image = PGL_94352122738688 , )
 	Color_8.name = "Color_8"
 	context.turtle.setMaterial(8,Color_8)
-	PGL_94509153746288 = pgl.ImageTexture("PGL_94509153746288" , "textures/leaf.png" , )
-	PGL_94509153746288.name = "PGL_94509153746288"
-	Color_9 = pgl.Texture2D(image = PGL_94509153746288 , )
+	PGL_94351710199024 = pgl.ImageTexture("PGL_94351710199024" , "textures/leaf.png" , )
+	PGL_94351710199024.name = "PGL_94351710199024"
+	Color_9 = pgl.Texture2D(image = PGL_94351710199024 , )
 	Color_9.name = "Color_9"
 	context.turtle.setMaterial(9,Color_9)
-	PGL_94509153792128 = pgl.ImageTexture("PGL_94509153792128" , "textures/strawb.jpeg" , )
-	PGL_94509153792128.name = "PGL_94509153792128"
-	Color_10 = pgl.Texture2D(image = PGL_94509153792128 , )
+	PGL_94351711447792 = pgl.ImageTexture("PGL_94351711447792" , "textures/strawb.jpeg" , )
+	Color_10 = pgl.Texture2D(image = PGL_94351711447792 , )
 	Color_10.name = "Color_10"
 	context.turtle.setMaterial(10,Color_10)
-	scalars = [('tropism', 'Float', 9.81, 0.0, 99.99, 2), ('Hair', 'Bool', False), ('Point Light', 'Category'), ('Light_location_Z', 'Integer', 20, 0, 100), ('Light_location_Y', 'Integer', 25, 0, 100), ('Light_location_X', 'Integer', 0, 0, 100), ('Phototropism', 'Bool', False), ('Days', 'Category'), ('Days', 'Integer', 140, 0, 1000), ('SDLD', 'Bool', False), ('months', 'Integer', 6, 1, 12), ('start', 'Integer', 4, 1, 12)]
+	scalars = [('tropism', 'Float', 9.81, 0.0, 99.99, 2), ('Hair', 'Bool', False), ('Point Light', 'Category'), ('Light_location_Z', 'Integer', 20, 0, 100), ('Light_location_Y', 'Integer', 25, 0, 100), ('Light_location_X', 'Integer', 0, 0, 100), ('Phototropism', 'Bool', False), ('Days', 'Category'), ('Days', 'Integer', 140, 0, 1000), ('SDLD', 'Bool', False), ('months', 'Integer', 7, 1, 12), ('start', 'Integer', 2, 1, 12)]
 	context["__scalars__"] = scalars
 	for s in scalars:
 		if not s[1] == "Category" : context[s[0]] = s[2]
