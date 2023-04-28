@@ -38,6 +38,7 @@ def RanTemp(x, max, low):
 #Number of infloresences/strawberries on a single stem
 inflo = json_dict["inflorescence"]
 Petiole = json_dict["petiole"]
+Truss_split_length = [4, 6]
 
 #List of mean temperatures from the UK of 2020 and the max and min temps recorded for that day
 mean = json_dict["temperatures"]["mean"]
@@ -144,6 +145,14 @@ def check_distance(point1, radius1, point2, radius2):
   else:
     return False
 
+def cube_distance(cube1_center, cube1_size, cube2_center, cube2_size):
+  A = ny.array((cube2_center[0], cube2_center[1], cube2_center[2]))
+  B = ny.array((cube1_center[0], cube1_center[1], cube1_center[2]))
+  distance = ny.linalg.norm(B - A)
+  if distance <= (cube1_size + cube2_size) / 2:
+    return True
+  else:
+    return False
 
 Axiom: Plight()  Farm(1, 1, 150/3)
 
@@ -244,19 +253,25 @@ Hr(x):
 INF(x):
  #Create number of infloresence based on the mode of Riseholme data using Rayleigh
 	s = rng.rayleigh(5, 1)
+	truss_length = rd.randint(Truss_split_length[0], Truss_split_length[1])
 	
-	nproduce SetColor(2)+(75)@Tp(0,0,-1) Elasticity(abs(tropism)/1000.)nF(3, 0.1)[Berries(int(s))]
+	nproduce SetColor(2)+(75)@Tp(0,0,-1) Elasticity(abs(tropism)/1000.) nF(truss_length, 0.1) [Berries(int(s))]
 
 
 #Berry generation
 Berries(x):
-  rotation = 90 / x
+  unique_rotation = rd.sample(range(0, 360 + 1), x)
+  unique_angle = rd.sample(range(0, 50 + 1), x)
   for a in range(x):
     size = float(decimal.Decimal(rd.randrange(2, 5))/10)
-    rotation = rotation + 90 / x
     #nproduce /(rd.randint(0, 360))[BWeight(size)+(rotation)nF(3, 0.1) BerryLeaf() f(size) SetColor(10)TextureScale(1) ?P BerryRadius(size)]
-    nproduce /(rd.randint(0,180))[+(rotation) BWeight(size) nF(3, 0.1) BerryLeaf() f(size) SetColor(10)TextureScale(1)?P BerryRadius(size)]
+    #BerryLeaf() SetColor(10)TextureScale(1)?P BerryRadius(size)
+    nproduce [/(unique_rotation[a])+(unique_angle[a]) BWeight(size) TrussLength(size) ?P BerryRadius(size)]
 
+
+TrussLength(r):
+  Length = rd.randint(Truss_split_length[0], Truss_split_length[1])
+  nproduce nF(Length, 0.2)
 
 BerryLeaf():
 	nproduce [+(90)/(90)~l(0.5)] [-(90)/(90)~l(0.5)] [/(90)+(90) /(90)~l(0.5)] [/(90)-(90) /(90)~l(0.5)]
@@ -271,9 +286,10 @@ BWeight(x):
   fruit = [p, r]
   fruit_pos.append(fruit)
   for point in fruit_pos:
-    if point[0] != p and check_distance({p[0], p[1], p[2]}, r, point[0], point[1]):
-      return
-  nproduce @O(r)
+    if point[0] != p and cube_distance([p[0], p[1], p[2]], r, point[0], point[1]):
+      nproduce nF(1, 0.1)
+  nproduce BerryLeaf() SetColor(10)TextureScale(1)f(r)@O(r)
+
 
 #Stolon/Runner generation
 ST(x):
@@ -346,17 +362,17 @@ def __initialiseContext__(context):
 	Color_7 = pgl.Material("Color_7" , ambient = (178,206,171) , diffuse = 0.68932 , )
 	Color_7.name = "Color_7"
 	context.turtle.setMaterial(7,Color_7)
-	PGL_94352122738688 = pgl.ImageTexture("PGL_94352122738688" , "textures/stem_drk.png" , )
-	Color_8 = pgl.Texture2D(image = PGL_94352122738688 , )
+	PGL_94146810115840 = pgl.ImageTexture("PGL_94146810115840" , "textures/stem_drk.png" , )
+	Color_8 = pgl.Texture2D(image = PGL_94146810115840 , )
 	Color_8.name = "Color_8"
 	context.turtle.setMaterial(8,Color_8)
-	PGL_94351710199024 = pgl.ImageTexture("PGL_94351710199024" , "textures/leaf.png" , )
-	PGL_94351710199024.name = "PGL_94351710199024"
-	Color_9 = pgl.Texture2D(image = PGL_94351710199024 , )
+	PGL_94146494177248 = pgl.ImageTexture("PGL_94146494177248" , "textures/leaf.png" , )
+	PGL_94146494177248.name = "PGL_94146494177248"
+	Color_9 = pgl.Texture2D(image = PGL_94146494177248 , )
 	Color_9.name = "Color_9"
 	context.turtle.setMaterial(9,Color_9)
-	PGL_94351711447792 = pgl.ImageTexture("PGL_94351711447792" , "textures/strawb.jpeg" , )
-	Color_10 = pgl.Texture2D(image = PGL_94351711447792 , )
+	PGL_94146635922768 = pgl.ImageTexture("PGL_94146635922768" , "textures/strawb.jpeg" , )
+	Color_10 = pgl.Texture2D(image = PGL_94146635922768 , )
 	Color_10.name = "Color_10"
 	context.turtle.setMaterial(10,Color_10)
 	scalars = [('tropism', 'Float', 9.81, 0.0, 99.99, 2), ('Hair', 'Bool', False), ('Point Light', 'Category'), ('Light_location_Z', 'Integer', 20, 0, 100), ('Light_location_Y', 'Integer', 25, 0, 100), ('Light_location_X', 'Integer', 0, 0, 100), ('Phototropism', 'Bool', False), ('Days', 'Category'), ('Days', 'Integer', 140, 0, 1000), ('SDLD', 'Bool', False), ('months', 'Integer', 7, 1, 12), ('start', 'Integer', 2, 1, 12)]
