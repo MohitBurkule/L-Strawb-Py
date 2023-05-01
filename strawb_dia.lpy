@@ -284,11 +284,10 @@ LF(x, leaf):
 	while LeafArea < 30.41 or LeafArea > 323.64:
 		LeafArea = rng.rayleigh(137, 1)
 	
-	LeafArea = ((LeafArea[0] / 3) / 3) / 3
-	#LeafArea = round(T / 5) + 1
+	LeafArea = ((LeafArea[0] / 3) / 3) / 3 
 	
 	#Get weight based on the leaf area
-	DryWeight = round(2500 / 1 + float(decimal.Decimal(LeafArea)/5)) 
+	DryWeight = round(5000 / 1 + float(decimal.Decimal(LeafArea)/5)) 
 	
 	#the older the leaf the bigger the angle
 	angle = T * rd.randint(1, 10)
@@ -367,17 +366,17 @@ def __initialiseContext__(context):
 	Color_7 = pgl.Material("Color_7" , ambient = (178,206,171) , diffuse = 0.68932 , )
 	Color_7.name = "Color_7"
 	context.turtle.setMaterial(7,Color_7)
-	PGL_94541721297776 = pgl.ImageTexture("PGL_94541721297776" , "textures/stem_drk.png" , )
-	Color_8 = pgl.Texture2D(image = PGL_94541721297776 , )
+	PGL_94541711062160 = pgl.ImageTexture("PGL_94541711062160" , "textures/stem_drk.png" , )
+	Color_8 = pgl.Texture2D(image = PGL_94541711062160 , )
 	Color_8.name = "Color_8"
 	context.turtle.setMaterial(8,Color_8)
-	PGL_94541683226048 = pgl.ImageTexture("PGL_94541683226048" , "textures/leaf.png" , )
-	PGL_94541683226048.name = "PGL_94541683226048"
-	Color_9 = pgl.Texture2D(image = PGL_94541683226048 , )
+	PGL_94541750565632 = pgl.ImageTexture("PGL_94541750565632" , "textures/leaf.png" , )
+	PGL_94541750565632.name = "PGL_94541750565632"
+	Color_9 = pgl.Texture2D(image = PGL_94541750565632 , )
 	Color_9.name = "Color_9"
 	context.turtle.setMaterial(9,Color_9)
-	PGL_94541834905280 = pgl.ImageTexture("PGL_94541834905280" , "textures/strawb.jpeg" , )
-	Color_10 = pgl.Texture2D(image = PGL_94541834905280 , )
+	PGL_94541915212272 = pgl.ImageTexture("PGL_94541915212272" , "textures/strawb.jpeg" , )
+	Color_10 = pgl.Texture2D(image = PGL_94541915212272 , )
 	Color_10.name = "Color_10"
 	context.turtle.setMaterial(10,Color_10)
 	scalars = [('tropism', 'Float', 9.81, 0.0, 99.99, 2), ('Hair', 'Bool', False), ('Point Light', 'Category'), ('Light_location_Z', 'Integer', 20, 0, 100), ('Light_location_Y', 'Integer', 25, 0, 100), ('Light_location_X', 'Integer', 0, 0, 100), ('Phototropism', 'Bool', False), ('Days', 'Category'), ('Days', 'Integer', 140, 0, 1000), ('SDLD', 'Bool', False), ('months', 'Integer', 7, 1, 12), ('start', 'Integer', 2, 1, 12)]
