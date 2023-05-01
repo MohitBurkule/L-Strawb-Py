@@ -16,6 +16,8 @@ Px = 0
 Py = 0
 
 spiral = 0
+spiral_angle = []
+
 
 #Textures for the plants
 context().turtle.setMaterial(9,ImageTexture('textures/leaf.png'))
@@ -81,6 +83,8 @@ def CalGDD(high, low):
 def Spiral():
 	global spiral
 	spiral = spiral + rd.randint(50, 70)
+	if spiral > 360:
+		spiral = spiral - 360
 	return spiral
 
 
@@ -292,6 +296,13 @@ LF(x, leaf):
 	#the older the leaf the bigger the angle
 	angle = T * rd.randint(1, 10)
 	#Cannot exceed 70 degrees
+	
+	if len(spiral_angle) > 0:
+		for leaf_angle in spiral_angle:
+			while angle > leaf_angle[0]-5 and angle < leaf_angle[0]+5 and spiral > leaf_angle[1]+10 and spiral < leaf_angle[1]-10:
+				angle = angle + 5
+				
+				
 	if (angle >  70):
 		nproduce +(70)
 	else:
@@ -299,6 +310,8 @@ LF(x, leaf):
 	
 	nproduce @Tp(LightLoc(Px, Light_location_X), LightLoc(Py, Light_location_Y),-1) Elasticity(abs(tropism)/DryWeight) nF(x, 0.1)
 	nproduce ?P FirstLeaf(LeafArea/2)
+	
+	spiral_angle.append([angle, spiral])
 
 
 og(x):
@@ -327,6 +340,7 @@ P(x):
 	for point in leaves_circle_pos:
 		if point[0] != p and cube_distance([p[0], p[1], p[2]], r, point[0], point[1]):
 			r = r / 2
+			nproduce +(5)
 	nproduce /(90)P(r)
 
 Spr():
@@ -366,17 +380,17 @@ def __initialiseContext__(context):
 	Color_7 = pgl.Material("Color_7" , ambient = (178,206,171) , diffuse = 0.68932 , )
 	Color_7.name = "Color_7"
 	context.turtle.setMaterial(7,Color_7)
-	PGL_94541711062160 = pgl.ImageTexture("PGL_94541711062160" , "textures/stem_drk.png" , )
-	Color_8 = pgl.Texture2D(image = PGL_94541711062160 , )
+	PGL_94137975179728 = pgl.ImageTexture("PGL_94137975179728" , "textures/stem_drk.png" , )
+	Color_8 = pgl.Texture2D(image = PGL_94137975179728 , )
 	Color_8.name = "Color_8"
 	context.turtle.setMaterial(8,Color_8)
-	PGL_94541750565632 = pgl.ImageTexture("PGL_94541750565632" , "textures/leaf.png" , )
-	PGL_94541750565632.name = "PGL_94541750565632"
-	Color_9 = pgl.Texture2D(image = PGL_94541750565632 , )
+	PGL_94138320319152 = pgl.ImageTexture("PGL_94138320319152" , "textures/leaf.png" , )
+	PGL_94138320319152.name = "PGL_94138320319152"
+	Color_9 = pgl.Texture2D(image = PGL_94138320319152 , )
 	Color_9.name = "Color_9"
 	context.turtle.setMaterial(9,Color_9)
-	PGL_94541915212272 = pgl.ImageTexture("PGL_94541915212272" , "textures/strawb.jpeg" , )
-	Color_10 = pgl.Texture2D(image = PGL_94541915212272 , )
+	PGL_94137982159424 = pgl.ImageTexture("PGL_94137982159424" , "textures/strawb.jpeg" , )
+	Color_10 = pgl.Texture2D(image = PGL_94137982159424 , )
 	Color_10.name = "Color_10"
 	context.turtle.setMaterial(10,Color_10)
 	scalars = [('tropism', 'Float', 9.81, 0.0, 99.99, 2), ('Hair', 'Bool', False), ('Point Light', 'Category'), ('Light_location_Z', 'Integer', 20, 0, 100), ('Light_location_Y', 'Integer', 25, 0, 100), ('Light_location_X', 'Integer', 0, 0, 100), ('Phototropism', 'Bool', False), ('Days', 'Category'), ('Days', 'Integer', 140, 0, 1000), ('SDLD', 'Bool', False), ('months', 'Integer', 7, 1, 12), ('start', 'Integer', 2, 1, 12)]
