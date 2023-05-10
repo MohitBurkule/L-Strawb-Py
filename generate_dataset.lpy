@@ -2,24 +2,96 @@ import os
 import numpy as np
 from openalea import lpy
 from openalea.plantgl.all import Viewer
+from numpy.random import random
 
 s_counter = 0
 
 if not os.path.exists('out'):
-  os.makedirs('out')
+  os.makedirs('out')  
 
-for n_trusses in range(1,8+1):
-  for n_berries in range(1,8+1):
-    for berry_size in np.arange(0.2,0.7,0.1):
-      for ped_len in np.arange(1.5,8+1,0.5):
-        for pedicel_len in np.arange(1,3+1,0.5):    
+trusses = np.arange(1,9)
+berries = np.arange(1,9)
+sizes = np.random.uniform(low=0.2, high=0.7, size=(7,)) 
+peduncle =  np.random.uniform(low=1.5, high=10, size=(7,))
+pedicel = np.random.uniform(low=1, high=3, size=(7,))
+
+lines = []
+
+for n_trusses in trusses: 
+  n_berries = 4
+  berry_size = 0.45
+  ped_len = 2 # short enough that it is within the canopy so we can see the effects
+  pedicel_len = 2
+  variables = {'N_TRUSSES' : n_trusses, 'N_BERRIES': n_berries, 'BERRY_SIZE': berry_size, 'N_STEPS_PED': ped_len, 'N_STEPS_CEL': pedicel_len, 
+            'LEAFS': 40, 'LEAF_AREA': 3, 'N_STEPS_PETIOLE': 8, 'PETIOLE_LEN': 1, 'PEDUNCLE_LEN': 1, 'PEDICEL_LEN': 1, 'PEDICEL_RADIUS': 0.03,  'PETIOLE_RADIUS': 0.1, 'PEDUNCLE_RADIUS': 0.1}
   
-          variables = {'N_TRUSSES' : n_trusses, 'N_BERRIES':n_berries, 'BERRY_SIZE': berry_size, 'N_STEPS_PED':ped_len, 'N_STEPS_CEL':pedicel_len, 
-          'LEAFS':40, 'LEAF_AREA':3, 'N_STEPS_PETIOLE':1, 'PETIOLE_LEN':1, 'PEDUNCLE_LEN':1, 'PEDICEL_LEN':1, 'PEDICEL_RADIUS':0.03,  'PETIOLE_RADIUS':0.1, 'PEDUNCLE_RADIUS':0.1}
-          
-          lsys = lpy.Lsystem('strawb_dia.lpy',variables)
-          
-          scene = lsys.sceneInterpretation(list(lsys)[-1])
-          scene.save(f'out/s{s_counter}.obj')
-          s_counter+=1
+  lsys = lpy.Lsystem('strawb_dia.lpy', variables)
+  scene = lsys.sceneInterpretation(list(lsys)[-1])
+  scene.save(f'out/s{s_counter}.ply')
+  lines.append(f"s{s_counter} {n_trusses} {n_berries} {berry_size} {ped_len} {pedicel_len}")
+  s_counter+=1
+  
+for n_berries in berries:
+  n_trusses = 3  
+  berry_size = 0.45
+  ped_len = 2 # short enough that it is within the canopy so we can see the effects
+  pedicel_len = 2
+  variables = {'N_TRUSSES' : n_trusses, 'N_BERRIES': n_berries, 'BERRY_SIZE': berry_size, 'N_STEPS_PED': ped_len, 'N_STEPS_CEL': pedicel_len, 
+            'LEAFS': 40, 'LEAF_AREA': 3, 'N_STEPS_PETIOLE': 8, 'PETIOLE_LEN': 1, 'PEDUNCLE_LEN': 1, 'PEDICEL_LEN': 1, 'PEDICEL_RADIUS': 0.03,  'PETIOLE_RADIUS': 0.1, 'PEDUNCLE_RADIUS': 0.1}
+  
+  lsys = lpy.Lsystem('strawb_dia.lpy', variables)
+  scene = lsys.sceneInterpretation(list(lsys)[-1])
+  scene.save(f'out/s{s_counter}.ply')
+  lines.append(f"s{s_counter} {n_trusses} {n_berries} {berry_size} {ped_len} {pedicel_len}")
+  s_counter+=1
+  
+for berry_size in sizes:
+  n_trusses = 3
+  n_berries = 4  
+  ped_len = 2 # short enough that it is within the canopy so we can see the effects
+  pedicel_len = 2
+  variables = {'N_TRUSSES' : n_trusses, 'N_BERRIES': n_berries, 'BERRY_SIZE': berry_size, 'N_STEPS_PED': ped_len, 'N_STEPS_CEL': pedicel_len, 
+            'LEAFS': 40, 'LEAF_AREA': 3, 'N_STEPS_PETIOLE': 8, 'PETIOLE_LEN': 1, 'PEDUNCLE_LEN': 1, 'PEDICEL_LEN': 1, 'PEDICEL_RADIUS': 0.03,  'PETIOLE_RADIUS': 0.1, 'PEDUNCLE_RADIUS': 0.1}
+  
+  lsys = lpy.Lsystem('strawb_dia.lpy', variables)
+  scene = lsys.sceneInterpretation(list(lsys)[-1])
+  scene.save(f'out/s{s_counter}.ply')
+  lines.append(f"s{s_counter} {n_trusses} {n_berries} {berry_size} {ped_len} {pedicel_len}")
+  s_counter+=1
+  
+for ped_len in peduncle:
+  n_trusses = 3
+  n_berries = 4  
+  berry_size = 0.45 
+  pedicel_len = 2
+  variables = {'N_TRUSSES' : n_trusses, 'N_BERRIES': n_berries, 'BERRY_SIZE': berry_size, 'N_STEPS_PED': ped_len, 'N_STEPS_CEL': pedicel_len, 
+            'LEAFS': 40, 'LEAF_AREA': 3, 'N_STEPS_PETIOLE': 8, 'PETIOLE_LEN': 1, 'PEDUNCLE_LEN': 1, 'PEDICEL_LEN': 1, 'PEDICEL_RADIUS': 0.03,  'PETIOLE_RADIUS': 0.1, 'PEDUNCLE_RADIUS': 0.1}
+  
+  lsys = lpy.Lsystem('strawb_dia.lpy', variables)
+  scene = lsys.sceneInterpretation(list(lsys)[-1])
+  scene.save(f'out/s{s_counter}.ply')
+  lines.append(f"s{s_counter} {n_trusses} {n_berries} {berry_size} {ped_len} {pedicel_len}")
+  s_counter+=1
+  
+for pedicel_len in pedicel:
+  n_trusses = 3
+  n_berries = 4  
+  berry_size = 0.45
+  ped_len = 2 # short enough that it is within the canopy so we can see the effects  
+  variables = {'N_TRUSSES' : n_trusses, 'N_BERRIES': n_berries, 'BERRY_SIZE': berry_size, 'N_STEPS_PED': ped_len, 'N_STEPS_CEL': pedicel_len, 
+            'LEAFS': 40, 'LEAF_AREA': 3, 'N_STEPS_PETIOLE': 8, 'PETIOLE_LEN': 1, 'PEDUNCLE_LEN': 1, 'PEDICEL_LEN': 1, 'PEDICEL_RADIUS': 0.03,  'PETIOLE_RADIUS': 0.1, 'PEDUNCLE_RADIUS': 0.1}
+  
+  lsys = lpy.Lsystem('strawb_dia.lpy', variables)
+  scene = lsys.sceneInterpretation(list(lsys)[-1])
+  scene.save(f'out/s{s_counter}.ply')
+  lines.append(f"s{s_counter} {n_trusses} {n_berries} {berry_size} {ped_len} {pedicel_len}")
+  s_counter+=1
+  
          
+with open('out/s_info.txt', 'w') as f:
+    f.write("sample n_trusses berries_per_truss berry_size peduncle_len pedicel_len\n")
+    
+    for line in lines:
+        f.write(line)
+        f.write('\n')
+       

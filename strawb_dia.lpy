@@ -8,10 +8,12 @@ import math
 import time
 import json
 
+rd.seed(42)
+
 # Load default/external specify_params
 specify_params = True
 if specify_params:
-    extern(N_TRUSSES = 2,N_BERRIES = 3, BERRY_SIZE = 0.4, N_STEPS_PED = 2, N_STEPS_CEL = 2, LEAFS = 40, LEAF_AREA = 3, N_STEPS_PETIOLE = 4, PETIOLE_LEN = 1, PEDUNCLE_LEN = 1, PEDICEL_LEN = 1, PEDICEL_RADIUS = 0.03,  PETIOLE_RADIUS = 0.1, PEDUNCLE_RADIUS = 0.1) 
+    extern(N_TRUSSES = 3,N_BERRIES = 4, BERRY_SIZE = 0.45, N_STEPS_PED = 2, N_STEPS_CEL = 2, LEAFS = 30, LEAF_AREA = 3, N_STEPS_PETIOLE = 5, PETIOLE_LEN = 1, PEDUNCLE_LEN = 1, PEDICEL_LEN = 1, PEDICEL_RADIUS = 0.03,  PETIOLE_RADIUS = 0.1, PEDUNCLE_RADIUS = 0.1) 
   
 #LeafArea
 Lf = 0
@@ -140,9 +142,12 @@ for n in range(len(tempHigh)):
 
 total = GDD
 
+"""
 leafs = round(total / rd.randint(60, 66))
 if (leafs > 30):
     leafs = 30
+"""
+leafs = LEAFS
 
 
 def check_distance(point1, radius1, point2, radius2):
@@ -237,7 +242,7 @@ INF(x):
     if specify_params:          
         FruitWeight = round(2000 / (1 + float(decimal.Decimal(N_BERRIES*BERRY_SIZE)/5))) 
         #nproduce SetColor(0,0,255)/(5)+(15)@Tp(0,0,-1) Elasticity(abs(tropism)/(FruitWeight/3))nF(1.5, 0.1)[nF(N_STEPS_PED, PEDUNCLE_LEN, PEDUNCLE_RADIUS)Berries(int(N_BERRIES))]
-        nproduce SetColor(0,0,255)+(75)@Tp(0,0,-1) Elasticity(abs(tropism)/1000.) nF(N_STEPS_PED, PEDUNCLE_LEN, PEDUNCLE_RADIUS) [Berries(int(N_BERRIES))]
+        nproduce SetColor(0,0,255)+(75)@Tp(0,0,-1) Elasticity(abs(tropism)/FruitWeight) nF(N_STEPS_PED, PEDUNCLE_LEN, PEDUNCLE_RADIUS) [Berries(int(N_BERRIES))]
 
     else:
         s = rng.rayleigh(5, 1)
@@ -291,7 +296,11 @@ ST(x):
 #Leaf polygon generation
 L(x):
     if specify_params:
-        nproduce SetColor(0,255,0) TextureScale(1)LF(PETIOLE_LEN*N_STEPS_PETIOLE, x)
+        eps = rng.rayleigh(10, 1)
+        while eps < 0 or eps > 10:
+            eps = rng.rayleigh(10, 1)
+        eps = eps[0]  
+        nproduce SetColor(0,255,0) TextureScale(1) LF((PETIOLE_LEN*N_STEPS_PETIOLE)+eps, x)
     else:
         #generate petiole length
         petiole = rng.uniform(ny.min(Petiole), ny.max(Petiole), 1)
@@ -306,13 +315,18 @@ LF(x, leaf):
     T = leafs - leaf
 
     if specify_params:
-        LeafArea = LEAF_AREA
-        LeafArea = rng.rayleigh(4, 1)
+        
+        eps = rng.rayleigh(1, 1)
+        while eps < 0 or eps > 1:
+            eps = rng.rayleigh(1, 1)
+        eps = eps[0]        
+        LeafArea = LEAF_AREA + eps
+        #LeafArea = rng.rayleigh(4, 1)
         #loop to create new values in case the value generated was above the min or max of the original data	
-        while LeafArea < 1 or LeafArea > 5:
-            LeafArea = rng.rayleigh(4, 1)
+        #while LeafArea < 1 or LeafArea > 5:
+        #    LeafArea = rng.rayleigh(4, 1)
     
-        LeafArea = LeafArea[0]
+        #LeafArea = LeafArea[0]
     else:		
         #Generates leaves with rayleigh distribution based on the mode of the real data.
         LeafArea = rng.rayleigh(137, 1)
@@ -339,12 +353,14 @@ LF(x, leaf):
         nproduce +(70)
     else:
         nproduce +(angle)
+        
     if specify_params:
         eps = rng.rayleigh(1, 1)
         while eps < 0 or eps > 1:
             eps = rng.rayleigh(1, 1)
-        eps = eps[0]
-        nproduce @Tp(LightLoc(Px, Light_location_X), LightLoc(Py, Light_location_Y),-1) Elasticity(abs(tropism)/DryWeight/3.5) nF(N_STEPS_PETIOLE+eps, PETIOLE_LEN, PETIOLE_RADIUS)
+        eps = eps[0]*5
+        print(eps)
+        nproduce @Tp(LightLoc(Px, Light_location_X), LightLoc(Py, Light_location_Y),-1) Elasticity(abs(tropism)/DryWeight*10) nF(N_STEPS_PETIOLE+eps, PETIOLE_LEN, PETIOLE_RADIUS)
     else:
         nproduce @Tp(LightLoc(Px, Light_location_X), LightLoc(Py, Light_location_Y),-1) Elasticity(abs(tropism)/DryWeight) nF(x, 0.1)
     nproduce ?P LeafRadius(LeafArea/2)
