@@ -27,7 +27,7 @@ for n_trusses in trusses:
   
   lsys = lpy.Lsystem('strawb_dia.lpy', variables)
   scene = lsys.sceneInterpretation(list(lsys)[-1])
-  scene.save(f'out/s{s_counter}.ply')
+  scene.save(f'out/s{s_counter}.obj')
   lines.append(f"s{s_counter} {n_trusses} {n_berries} {berry_size} {ped_len} {pedicel_len}")
   s_counter+=1
   
@@ -41,7 +41,7 @@ for n_berries in berries:
   
   lsys = lpy.Lsystem('strawb_dia.lpy', variables)
   scene = lsys.sceneInterpretation(list(lsys)[-1])
-  scene.save(f'out/s{s_counter}.ply')
+  scene.save(f'out/s{s_counter}.obj')
   lines.append(f"s{s_counter} {n_trusses} {n_berries} {berry_size} {ped_len} {pedicel_len}")
   s_counter+=1
   
@@ -55,7 +55,7 @@ for berry_size in sizes:
   
   lsys = lpy.Lsystem('strawb_dia.lpy', variables)
   scene = lsys.sceneInterpretation(list(lsys)[-1])
-  scene.save(f'out/s{s_counter}.ply')
+  scene.save(f'out/s{s_counter}.obj')
   lines.append(f"s{s_counter} {n_trusses} {n_berries} {berry_size} {ped_len} {pedicel_len}")
   s_counter+=1
   
@@ -69,7 +69,7 @@ for ped_len in peduncle:
   
   lsys = lpy.Lsystem('strawb_dia.lpy', variables)
   scene = lsys.sceneInterpretation(list(lsys)[-1])
-  scene.save(f'out/s{s_counter}.ply')
+  scene.save(f'out/s{s_counter}.obj')
   lines.append(f"s{s_counter} {n_trusses} {n_berries} {berry_size} {ped_len} {pedicel_len}")
   s_counter+=1
   
@@ -83,7 +83,7 @@ for pedicel_len in pedicel:
   
   lsys = lpy.Lsystem('strawb_dia.lpy', variables)
   scene = lsys.sceneInterpretation(list(lsys)[-1])
-  scene.save(f'out/s{s_counter}.ply')
+  scene.save(f'out/s{s_counter}.obj')
   lines.append(f"s{s_counter} {n_trusses} {n_berries} {berry_size} {ped_len} {pedicel_len}")
   s_counter+=1
   
